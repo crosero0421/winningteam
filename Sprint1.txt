@@ -8,4 +8,4 @@ Este módulo hará la integración de los demás módulos del sistema para garan
 ● Gestión de usuarios y roles. Deberá contener un identificador único del usuario, el nombre y el rol en el sistema de información (vendedor, administrador, ejecutivo, operario, director, gerente comercial) con el fin de restringir/otorgar accesos al sistema de información.
 
 Integrantes:
-Mi nombre es Carlos Augusto Rosero Cardenas, soy Administrador de Empresas vivo en la Ciudad de Cali, actualmente me desempeño con Gerente de cuenta y servicio al cliente en la empresa Sistemas en Linea. En este proyecto desempeñare el rol de Desarrollador.
+Mi nombre es Carlos Augusto Rosero Cardenas, soy Administrador de Empresas vivo en la Ciudad de Cali, actualmente me desempeño con Gerente de cuenta y servicio al cliente en la empresa Sistemas en Linea. En este proyecto desempeñare el rol de Desarrollador
