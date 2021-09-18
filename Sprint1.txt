@@ -1,3 +1,5 @@
+﻿                                                             Descripcion del proyecto
+
 Se propone analizar, diseñar y construir una aplicación software que permita controlar las ventas físicas y virtuales de una empresa de manufactura y hacerles el correspondiente seguimiento.
 Para que puedas desarrollar el proyecto que se te planteó, la aplicación web debe contar con los siguientes módulos:  
 ● Módulo administrador de ventas. Permite ingresar o registrar los pedidos realizados por cada uno de los clientes. Deberá tener un identificador único de venta, almacenar el valor total de la venta y la descripción detallada de la misma y tener una fecha inicial y una fecha futura de pago. Además, deberá contar con un encargado de gestionar dicha venta (responsable).
@@ -7,5 +9,13 @@ Para que puedas desarrollar el proyecto que se te planteó, la aplicación web d
 Este módulo hará la integración de los demás módulos del sistema para garantizar que los roles de los usuarios se ajusten a las distintas opciones de cada menú o formulario. Se contempla la identificación y el desarrollo de los casos de uso relacionados con la seguridad, así como el análisis de requisitos y el diseño del módulo.
 ● Gestión de usuarios y roles. Deberá contener un identificador único del usuario, el nombre y el rol en el sistema de información (vendedor, administrador, ejecutivo, operario, director, gerente comercial) con el fin de restringir/otorgar accesos al sistema de información.
 
-Integrantes:
-Mi nombre es Carlos Augusto Rosero Cardenas, soy Administrador de Empresas vivo en la Ciudad de Cali, actualmente me desempeño con Gerente de cuenta y servicio al cliente en la empresa Sistemas en Linea. En este proyecto desempeñare el rol de Desarrollador
+Aportes de cada integrante:
+
+Mi nombre es Carlos Augusto Rosero Cardenas, soy Administrador de Empresas vivo en la Ciudad de Cali, actualmente me desempeño con Gerente de cuenta y servicio al cliente en la empresa Sistemas en Linea. En este proyecto desempeñare el rol de Desarrollador.
+
+Mi nombre es Luis Eduardo Cantillo Zapateiro, tengo 19 años, nací en Arjona Bolivar que es donde actualmente vivo con mis padres, hermanos y primos, soy estudiante universitario activo en la carrera de tecnología en desarrollo de software, me gusta mucho ver series, películas, 
+leer, escuchar música y constantemente estudiar, muy apasionado a la programación, pendiente siempre a los avances tecnológico que se dan, mis expectativas frente a este curso es aprovechar al máximo todo el conocimiento impartido por parte de nuestros formadores como de los
+tutores y enriquecer mucho mas mis conocimientos, soy una persona responsable, empático, bondadoso, comprometido y muy respetuoso. En este proyecto desempeñare el rol de Scrum Master.
+
+
+
