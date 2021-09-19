@@ -21,3 +21,5 @@ Mi nombre es Juan Felipe García Gil, tengo 21 años. Nací en Tuluá, pero actu
 
 Mi nombre en German Ferley Guarin Delgado tengo 26 años, soy de Bucaramanga, Santander, me desempeño laboralmente en la parte de infraestructura tecnologica, me gusta mucho la programacion y quiero en un futuro vivir de ella. En este proyecto desempeñaré el rol de analista.
 
+Mi nombre es Eder Pérez García, tengo 26 años. Actualmente soy ingeniero electricista y trabajo en HMV ingenieros. Soy un apasionado por los retos matemáticos lógicos y esa es la razón por la cual disfruto la programación, ya que, es de esas áreas donde podemos aplicar a los algoritmos la matemática para así hacerlos más eficientes y funcionales. En este proyecto me desempeñare como Product Owner.
+
