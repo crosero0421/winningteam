@@ -23,3 +23,4 @@ Mi nombre en German Ferley Guarin Delgado tengo 26 años, soy de Bucaramanga, Sa
 
 Mi nombre es Eder Pérez García, tengo 26 años. Actualmente soy ingeniero electricista y trabajo en HMV ingenieros. Soy un apasionado por los retos matemáticos lógicos y esa es la razón por la cual disfruto la programación, ya que, es de esas áreas donde podemos aplicar a los algoritmos la matemática para así hacerlos más eficientes y funcionales. En este proyecto me desempeñare como Product Owner.
 
+Mi nombre es Jader Miguel Anaya Rincón, tengo 29 años soy de Lorica Cordoba, actualmente trabajo en una IPS me desempeño como analista de soporte, Soy ingeniero de Sistemas egresado de la universidad de Cordoba. siempre me ha gustado la programación y cada día ir renovando mi cnocimiento respecto a las nuevas tecnologia. 
