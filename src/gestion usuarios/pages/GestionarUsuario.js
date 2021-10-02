@@ -1,11 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import './GestionarUsuario.css';
-<<<<<<< HEAD
 import { Container,Button,FormGroup } from 'react-bootstrap';
-=======
-import { Container,Button } from 'react-bootstrap';
->>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
 
 
 const data = [
@@ -60,7 +56,6 @@ class GestionarUsuario extends React.Component{
             </p>
 
              <p>
-<<<<<<< HEAD
              <FormGroup>
                 <div>
                 <label>Estado:</label>
@@ -83,23 +78,6 @@ class GestionarUsuario extends React.Component{
                   <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
                 </select>
               </FormGroup>
-=======
-              <div>
-              <label htmlfor="nombre">Estado:</label>
-              </div>
-              <div>
-              <input type="text" placeholder="Estado" className="mb-4" size="30" />
-              </div>
-            </p>
-
-            <p>
-              <div>
-              <label htmlfor="nombre">Rol:</label>
-              </div>
-              <div>
-              <input type="text" placeholder="Rol" className="mb-4" size="30" />
-              </div>
->>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
             </p>
             <div className="button">
             <button type="button"  class="btn btn-success">Registrar usuario</button>
