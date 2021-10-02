@@ -14,17 +14,11 @@ const Header = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavDropdown title="Gestionar Productos" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/CrearProducto/2.1">
-                  Crear Productos
-                </NavDropdown.Item>
                 <NavDropdown.Item href="/GestionarProducto/2.2">
                   Gestionar Productos
                 </NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title="Gestionar Ventas" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/CrearVenta/2.1">
-                  Crear Venta
-                </NavDropdown.Item>
                 <NavDropdown.Item href="/GestionarVenta/2.2">
                   Gestionar Ventas
                 </NavDropdown.Item>
