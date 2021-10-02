@@ -1,0 +1,27 @@
+.App2 {
+  text-align: center;
+}
+
+
+.formu1 form {
+  
+text-align: left;
+margin-left: 40px;
+padding: 70px;
+font-size: 1em;
+display: grid;
+grid-template-columns: 2fr 6fr;
+
+
+}
+
+
+.body2 {
+  background: url(../pages/Imagenes/Imagen4.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 100vh;
+  background-position: center;
+  
+}
+
