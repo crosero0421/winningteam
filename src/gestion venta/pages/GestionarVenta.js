@@ -18,7 +18,11 @@ const data = [
 class GestionarVenta extends React.Component{
 state={
     data:data,
+<<<<<<< HEAD
     form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
+=======
+    form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:''},
+>>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
     modalInsertar: false
 };
 
@@ -50,7 +54,10 @@ insertar= ()=>{
     
     var valorNuevo= {...this.state.form};
     valorNuevo.IdVenta=this.state.data.length+9001;
+<<<<<<< HEAD
     valorNuevo.EstadoVenta = document.getElementById("estadoventa").value;
+=======
+>>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
     var lista= this.state.data;
     lista.push(valorNuevo);
     this.setState({ modalInsertar: false, data: lista });
@@ -117,7 +124,11 @@ insertar= ()=>{
             <Modal isOpen={this.state.modalInsertar}>
                 <ModalHeader>
                     <div>
+<<<<<<< HEAD
                         <h3>Registrar ventas</h3>
+=======
+                        <h3>Registrar Producto</h3>
+>>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
                     </div>
                 </ModalHeader>
                 <ModalBody>
@@ -180,6 +191,7 @@ insertar= ()=>{
                     
                     <FormGroup>
                         <div>
+<<<<<<< HEAD
                         <label>Estado venta:</label>
                         </div>
                         <select id="estadoventa" className="btn btn-info dropdown-toggle" >
@@ -187,11 +199,20 @@ insertar= ()=>{
                             <option className="btn btn-success dropdown-toggle" value="Cancelada">Cancelada</option>
                             <option className="btn btn-file dropdown-toggle" value="Entregada">Entregada</option>
                         </select>
+=======
+                        <label>Estado Venta:</label>
+                        </div>
+                        <input className="Form-control" name="EstadoVenta" type="text" onChange={this.handleChange} />
+>>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
                     </FormGroup>
 
                 </ModalBody>
                 <ModalFooter>
+<<<<<<< HEAD
                     <Button color="success" onClick={()=>this.insertar()}>Agregar Venta</Button>
+=======
+                    <Button color="success" onClick={()=>this.insertar()}>Agregar Producto</Button>
+>>>>>>> a46ed632cdc875dbfd8c680b2f02f6eddcaf981e
                     <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>
                 </ModalFooter>
             </Modal>
