@@ -5,6 +5,8 @@ import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, Mod
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
+import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+
 const data = [
     
   {IdVenta:'9001', ValorTotalVenta: '5000', Cantidad:'5', PrecioUnitarioCadaProducto:'1000', FechaVenta:'01/08/2021', DocumentoIdentificacion:'10029392', NombreCliente:' Luis', Vendedor:'Andres', EstadoVenta:'En proceso'},
@@ -66,14 +68,16 @@ insertar= ()=>{
     return (
 
         <div>
-            <Container className="Container">
+            <Container className="body"> 
             <h1 className="text-center">Gestion ventas</h1>
+            
             <form>
                 <p>
                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <Button className ="" color="primary" >Buscar Venta</Button>
                  </div>
                 <div>
+                    
                 <label>ID</label>
                 </div>
                   <Form.Control type="text" placeholder="Busqueda de venta por ID" />
@@ -86,7 +90,7 @@ insertar= ()=>{
                 <thead><tr><th className="text-center">ID Venta</th> 
                 <th className="text-center">Valor total de la venta</th>
                 <th className="text-center">Cantidad</th>
-                <th className="text-center">Precio unitario de cada producto</th>
+                <th className="text-center">Precio unitario del producto</th>
                 <th className="text-center">Fecha de la Venta</th>
                 <th className="text-center">Documento de identificacion</th>
                 <th className="text-center">Nombre del cliente</th>
@@ -107,8 +111,8 @@ insertar= ()=>{
                             <td className="text-center">{elemento.Vendedor}</td>
                             <td className="text-center">{elemento.EstadoVenta}</td>
 
-                            <td className="text-center" ><Button className="text-center" color="primary">Editar</Button> 
-                            <Button color="danger">Eliminar</Button></td>
+                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
+                            <Button color="danger"><FaTimes/></Button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -144,7 +148,7 @@ insertar= ()=>{
 
                     <FormGroup>
                         <div>
-                        <label>Precio unitario de cada producto:</label>
+                        <label>Precio unitario del producto:</label>
                         </div>
                         <input className="Form-control" name="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} />
                     </FormGroup>

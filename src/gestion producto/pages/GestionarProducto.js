@@ -5,6 +5,8 @@ import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, Mod
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
+import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+
 const data = [
     
     {IdProducto: 1, Descripcion: "Es recomendado", ValorUnitario: 4000, Estado: "No disponible" },
@@ -68,7 +70,7 @@ insertar= ()=>{
     return (
 
         <div>
-            <Container className="Container">
+            <Container className="body">
             <h1 className="text-center">Gestion productos</h1>
             <form>
                 <p>
@@ -98,8 +100,8 @@ insertar= ()=>{
                             <td className="text-center">{elemento.Descripcion}</td>
                             <td className="text-center">{elemento.ValorUnitario}</td>
                             <td className="text-center">{elemento.Estado}</td>
-                            <td className="text-center"><Button color="primary">Editar</Button>{" "}
-                            <Button color="danger">Eliminar</Button></td>
+                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
+                            <Button color="danger"><FaTimes /> </Button></td>
                         </tr>
                     ))}
                 </tbody>

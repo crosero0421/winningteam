@@ -2,6 +2,9 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import './GestionarUsuario.css';
 import { Container,Button,FormGroup } from 'react-bootstrap';
+import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+import Form from 'react-bootstrap/Form'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const data = [
@@ -104,8 +107,8 @@ class GestionarUsuario extends React.Component{
                             <td className="text-center">{elemento.Fecha}</td>
                             <td className="text-center">{elemento.Estado}</td>
                             <td className="text-center">{elemento.Rol}</td>
-                            <td className="text-center"><Button variant="primary">Editar</Button>{" "}
-                            <Button className="text-center" variant="danger">Eliminar</Button></td>
+                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
+                            <Button className="btn btn-danger "color="danger"><FaTimes/></Button></td>
                         </tr>
                     ))}  
               </tbody>
