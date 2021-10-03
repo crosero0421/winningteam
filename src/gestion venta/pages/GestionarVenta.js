@@ -84,10 +84,10 @@ insertar= ()=>{
 
             <Table>
                 <thead><tr><th className="text-center">ID Venta</th> 
-                <th className="text-center">Valor total venta</th>
+                <th className="text-center">Valor total de la venta</th>
                 <th className="text-center">Cantidad</th>
                 <th className="text-center">Precio unitario de cada producto</th>
-                <th className="text-center">Fecha de Venta</th>
+                <th className="text-center">Fecha de la Venta</th>
                 <th className="text-center">Documento de identificacion</th>
                 <th className="text-center">Nombre del cliente</th>
                 <th className="text-center">Vendedor</th>
@@ -151,7 +151,7 @@ insertar= ()=>{
 
                     <FormGroup>
                         <div>
-                        <label>Fecha de venta:</label>
+                        <label>Fecha de la venta:</label>
                         </div>
                         <input className="Form-control" name="FechaVenta" type="text" onChange={this.handleChange} />
                     </FormGroup>
