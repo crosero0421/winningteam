@@ -1,10 +1,10 @@
 import React from 'react';
-import Table from 'react-bootstrap/Table';
 import './GestionarUsuario.css';
-import { Container,Button,FormGroup } from 'react-bootstrap';
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import Form from 'react-bootstrap/Form'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+
 
 
 const data = [
@@ -23,84 +23,72 @@ class GestionarUsuario extends React.Component{
     modalInsertar: false
 };
 
+handleChange =(e)=>{
+
+  this.setState({
+  form: {
+
+      ...this.state.form,
+      [e.target.name]: e.target.value,
+
+   }
+
+ });
+
+}
+
+mostrarModalInsertar=()=>{
+ this.setState({modalInsertar:true});
+}
+
+ocultarModalInsertar=()=>{
+   this.setState({modalInsertar:false});
+ }
+
+
+insertar= ()=>{
+   
+   var valorNuevo= {...this.state.form};
+   valorNuevo.Id=this.state.data.length+1;
+   valorNuevo.Estado = document.getElementById("estado").value;
+   valorNuevo.Rol = document.getElementById("rol").value
+   var lista= this.state.data;
+   lista.push(valorNuevo);
+   this.setState({ modalInsertar: false, data: lista });
+
+
+ }
+
    render(){
     return (
+            
       <div>
-        
-      <Container className="body">
-      <h1 className="text-center">Gestion usuarios</h1> 
-        <div className="formulario">
-          <form>
-            <p>
-              <div>
-              <label htmlfor="nombre">ID:</label>
-              </div>
-              <div className="ID producto">
-              <input type="text" placeholder="ID Usuario" className="mb-4" size="30" />
-              </div>
-            </p>
-
-            <p>
-              <div>
-              <label htmlfor="nombre">Usuario:</label>
-              </div>
-              <div>
-              <input type="text" placeholder="Usuario" className="mb-4" size="30" />
-              </div>
-            </p>
-
-            <p>
-              <div>
-              <label htmlfor="nombre">Fecha:</label>
-              </div>
-              <div>
-              <input type="text" placeholder="Fecha" className="mb-4" size="30" />
-              </div>
-            </p>
-
-             <p>
-             <FormGroup>
+            <Container className="body">
+            <h1 className="text-center">Gestion Usuario</h1>
+            <form>
+                <p>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                <Button className ="" color="primary" >Buscar usuario</Button>
+                 </div>
                 <div>
-                <label>Estado:</label>
+                <label>ID</label>
                 </div>
-                <select id="estado" className="btn btn-info dropdown-toggle" >
-                  <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
-                  <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
-                  <option className="btn btn-file dropdown-toggle" value="No autorizado">No autorizado</option>
-                </select>
-              </FormGroup>
-            </p>
+                  <Form.Control type="text" placeholder="Busqueda de usuario por ID" />
+                </p>
+            </form>
+            <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Agregar Usuario</Button>
+           
 
-            <p>
-              <FormGroup>
-                <div>
-                <label>Rol:</label>
-                </div>
-                <select id="estado" className="btn btn-info dropdown-toggle" >
-                  <option className="btn btn-danger dropdown-toggle" value="Administrador">Administrador</option>
-                  <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
-                </select>
-              </FormGroup>
-            </p>
-            <div className="button">
-            <button type="button"  class="btn btn-success">Registrar usuario</button>
-            </div>
-          </form>
-        </div>
-      <React.Fragment>
-            <Table fluid>
-              <thead>
-                <tr>
-                  <th className="text-center">Id</th>
-                  <th className="text-center">Usuario</th>
-                  <th className="text-center">Fecha</th>
-                  <th className="text-center">Estado</th>
-                  <th className="text-center">Rol</th>
-                  <th className="text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                     {this.state.data.map((elemento)=>(
+            <Table>
+                <thead><tr><th className="text-center">ID Usuario</th>
+                <th className="text-center">Usuario</th>
+                <th className="text-center">Fecha</th>
+                <th className="text-center">Estado</th>
+                <th className="text-center">Rol</th>
+                <th className="text-center">Acciones</th>
+                </tr></thead>
+                <tbody>
+                    {this.state.data.map((elemento)=>(
                         <tr>
                             <td className="text-center">{elemento.Id}</td>
                             <td className="text-center">{elemento.Usuario}</td>
@@ -108,14 +96,79 @@ class GestionarUsuario extends React.Component{
                             <td className="text-center">{elemento.Estado}</td>
                             <td className="text-center">{elemento.Rol}</td>
                             <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
-                            <Button className="btn btn-danger "color="danger"><FaTimes/></Button></td>
+                            <Button color="danger"><FaTimes /> </Button></td>
                         </tr>
-                    ))}  
-              </tbody>
+                    ))}
+                </tbody>
             </Table>
-          </React.Fragment>
-          </Container>
-      </div>
+            </Container>
+            <Modal isOpen={this.state.modalInsertar}>
+                <ModalHeader>
+                    <div>
+                        <h3>Registrar Usuario</h3>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <FormGroup>
+                        <div>
+                        <label>Id usuario:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="Id" type="text"  value = {this.state.data.length+1}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Usuario:</label>
+                        </div>
+                        <input className="Form-control" name="Usuario" type="text" onChange={this.handleChange} />
+
+                     </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Fecha:</label>
+                        </div>
+                        <input className="Form-control" name="Fecha" type="text" onChange={this.handleChange} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <p>
+                        <div>
+                        <label>Estado:</label>
+                        </div>
+                        <select id="estado" className="btn btn-info dropdown-toggle" >
+                            <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
+                            <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
+                            <option className="btn btn-success dropdown-toggle" value="No autorizado">No utorizado</option>
+
+                        </select>
+                        </p>
+
+                    </FormGroup>
+
+
+
+                    <FormGroup>
+                        <p>
+                        <div>
+                        <label>Rol:</label>
+                        </div>
+                        <select id="rol" className="btn btn-info dropdown-toggle" >
+                            <option className="btn btn-danger dropdown-toggle" value="Administrador">Administrador</option>
+                            <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
+                        </select>
+                        </p>
+
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="success" onClick={()=>this.insertar()}>Agregar Usuario</Button>
+                    <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>
+                </ModalFooter>
+
+            </Modal>
+        </div>
+
     )
   }
 }
