@@ -21,7 +21,8 @@ class GestionarVenta extends React.Component{
 state={
     data:data,
     form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
-    modalInsertar: false
+    modalInsertar: false,
+    modalEditar: false,
 };
 
 
@@ -38,15 +39,48 @@ handleChange =(e)=>{
   });
 
 }
- 
+
+/* FUNCIONES PARA MOSTRAR Y OCULTAR EL MODAL DE INSERTAR*/  
 mostrarModalInsertar=()=>{
   this.setState({modalInsertar:true});
 }
 
 ocultarModalInsertar=()=>{
     this.setState({modalInsertar:false});
-  }
+}
 
+/* FUNCIONES PARA MOSTRAR Y OCULTAR EL MODAL DE EDITAR*/ 
+
+mostrarModalEditar=(registro)=>{
+    this.setState({modalEditar:true, form: registro});
+}
+  
+ocultarModalEditar=()=>{
+      this.setState({modalEditar:false});
+}
+
+/* FUNCION PARA EDITAR*/
+
+editar=(dato)=>{
+    var contador= 0;
+    var lista=this.state.data;
+    lista.map((registro)=>{
+        if(dato.IdVenta==registro.IdVenta){
+            lista[contador].ValorTotalVenta=dato.ValorTotalVenta;
+            lista[contador].Cantidad=dato.Cantidad;
+            lista[contador].PrecioUnitarioCadaProducto=dato.PrecioUnitarioCadaProducto;
+            lista[contador].FechaVenta=dato.FechaVenta;
+            lista[contador].DocumentoIdentificacion=dato.DocumentoIdentificacion;
+            lista[contador].NombreCliente=dato.NombreCliente;
+            lista[contador].Vendedor=dato.Vendedor;
+            lista[contador].EstadoVenta=dato.EstadoVenta;
+        }
+        contador++;
+    });
+    this.setState({data: lista,modalEditar: false});
+}
+
+/* FUNCION PARA INSERTAR*/
 
 insertar= ()=>{
     
@@ -60,6 +94,22 @@ insertar= ()=>{
 
   }
 
+/* FUNCION PARA ELIMINAR*/
+
+eliminar=(dato)=>{
+    var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")
+    if(opcion){
+        var contador=0;
+        var lista = this.state.data;
+        lista.map((registro)=>{
+            if(registro.IdVenta==dato.IdVenta){
+                lista.splice(contador, 1);
+            }
+            contador++;
+        })
+        this.setState({data:lista});
+    }
+}
 
 
     render(){
@@ -111,8 +161,8 @@ insertar= ()=>{
                             <td className="text-center">{elemento.Vendedor}</td>
                             <td className="text-center">{elemento.EstadoVenta}</td>
 
-                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
-                            <Button color="danger"><FaTimes/></Button></td>
+                            <td className="text-center" ><Button className="text-center" color="primary" onClick={()=>this.mostrarModalEditar(elemento)}><FaPencilAlt /> </Button> 
+                            <Button color="danger" onClick={()=>this.eliminar(elemento)}><FaTimes/></Button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -199,7 +249,99 @@ insertar= ()=>{
                     <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>
                 </ModalFooter>
             </Modal>
+        
+        
+
+
+
+
+
+
+
+            <Modal isOpen={this.state.modalEditar}>
+                <ModalHeader>
+                    <div>
+                        <h3>Editar ventas</h3>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <FormGroup>
+                        <div>
+                        <label>Id Venta:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="IdVenta" type="text" value={this.state.form.IdVenta}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Valor total venta:</label>
+                        </div>
+                        <input className="Form-control" name="ValorTotalVenta" type="text" onChange={this.handleChange} value={this.state.form.ValorTotalVenta}/>
+                     </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Cantidad:</label>
+                        </div>
+                        <input className="Form-control" name="Cantidad" type="text" onChange={this.handleChange} value={this.state.form.Cantidad} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Precio unitario del producto:</label>
+                        </div>
+                        <input className="Form-control" name="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} value={this.state.form.PrecioUnitarioCadaProducto} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Fecha de la venta:</label>
+                        </div>
+                        <input className="Form-control" name="FechaVenta" type="text" onChange={this.handleChange} value={this.state.form.FechaVenta} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Documento de identificacion:</label>
+                        </div>
+                        <input className="Form-control" name="DocumentoIdentificacion" type="text" onChange={this.handleChange} value={this.state.form.DocumentoIdentificacion} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Nombre del cliente:</label>
+                        </div>
+                        <input className="Form-control" name="NombreCliente" type="text" onChange={this.handleChange} value={this.state.form.NombreCliente} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Vendedor:</label>
+                        </div>
+                        <input className="Form-control" name="Vendedor" type="text" onChange={this.handleChange} value={this.state.form.Vendedor} />
+                    </FormGroup>
+
+                    
+                    <FormGroup>
+                        <div>
+                        <label>Estado venta:</label>
+                        </div>
+                        <select id="estadoventa" className="btn btn-info dropdown-toggle"  onChange={this.handleChange} value={this.state.form.EstadoVenta}>
+                            <option className="btn btn-danger dropdown-toggle" value="Proceso">Proceso</option>
+                            <option className="btn btn-success dropdown-toggle" value="Cancelada">Cancelada</option>
+                            <option className="btn btn-file dropdown-toggle" value="Entregada">Entregada</option>
+                        </select>
+                    </FormGroup>
+
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="success" onClick={()=>this.editar(this.state.form)}>Editar</Button>
+                    <Button color="danger" onClick={()=>this.ocultarModalEditar()}>Cancelar</Button>
+                </ModalFooter>
+            </Modal>
+
         </div>
+
 
        )
     }
