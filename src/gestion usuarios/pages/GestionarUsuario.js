@@ -20,7 +20,8 @@ class GestionarUsuario extends React.Component{
   state={
     data:data,
     form: {Id:'', Usuario: '', Fecha:'', Estado:'', Rol:''},
-    modalInsertar: false
+    modalInsertar: false,
+    modalEditar: false,
 };
 
 handleChange =(e)=>{
@@ -45,6 +46,14 @@ ocultarModalInsertar=()=>{
    this.setState({modalInsertar:false});
  }
 
+mostrarModalEditar=(registro)=>{
+    this.setState({modalEditar:true, form: registro});
+   }
+   
+ocultarModalEditar=()=>{
+      this.setState({modalEditar:false});
+    }
+
 
 insertar= ()=>{
    
@@ -58,6 +67,39 @@ insertar= ()=>{
 
 
  }
+
+
+ editar = (dato) => {
+    var contador = 0;
+    var arreglo = this.state.data;
+    arreglo.map((registro) => {
+      if (dato.Id == registro.Id) {
+        arreglo[contador].Usuario = dato.Usuario;
+        arreglo[contador].Fecha = dato.Fecha;
+        arreglo[contador].Estado = document.getElementById("estado").value;
+        arreglo[contador].Rol = document.getElementById("rol").value;
+
+      }
+      contador++;
+    });
+    this.setState({ data: arreglo, modalEditar: false });
+  };
+
+
+eliminar = (dato) => {
+    var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.Id);
+    if (opcion == true) {
+      var contador = 0;
+      var arreglo = this.state.data;
+      arreglo.map((registro) => {
+        if (dato.Id == registro.Id) {
+          arreglo.splice(contador, 1);
+        }
+        contador++;
+      });
+      this.setState({ data: arreglo, modalEditar: false });
+    }
+  };
 
    render(){
     return (
@@ -95,8 +137,8 @@ insertar= ()=>{
                             <td className="text-center">{elemento.Fecha}</td>
                             <td className="text-center">{elemento.Estado}</td>
                             <td className="text-center">{elemento.Rol}</td>
-                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
-                            <Button color="danger"><FaTimes /> </Button></td>
+                            <td className="text-center" ><Button onClick = {()=>this.mostrarModalEditar(elemento)}  className="text-center" color="primary"><FaPencilAlt /> </Button> {" "}
+                            <Button onClick={() =>this.eliminar(elemento)} color="danger"><FaTimes /> </Button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -164,6 +206,74 @@ insertar= ()=>{
                 <ModalFooter>
                     <Button color="success" onClick={()=>this.insertar()}>Agregar Usuario</Button>
                     <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>
+                </ModalFooter>
+
+            </Modal>
+
+
+
+            <Modal isOpen={this.state.modalEditar}>
+                <ModalHeader>
+                    <div>
+                        <h3>Editar Usuario</h3>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <FormGroup>
+                        <div>
+                        <label>Id usuario:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="Id" type="text"  value = {this.state.form.Id}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Usuario:</label>
+                        </div>
+                        <input className="Form-control" name="Usuario" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Usuario} />
+
+                     </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Fecha:</label>
+                        </div>
+                        <input className="Form-control" name="Fecha" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Fecha} />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <p>
+                        <div>
+                        <label>Estado:</label>
+                        </div>
+                        <select id="estado" className="btn btn-info dropdown-toggle">
+                            <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
+                            <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
+                            <option className="btn btn-success dropdown-toggle" value="No autorizado">No utorizado</option>
+
+                        </select>
+                        </p>
+
+                    </FormGroup>
+
+
+
+                    <FormGroup>
+                        <p>
+                        <div>
+                        <label>Rol:</label>
+                        </div>
+                        <select id="rol" className="btn btn-info dropdown-toggle" >
+                            <option className="btn btn-danger dropdown-toggle" value="Administrador">Administrador</option>
+                            <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
+                        </select>
+                        </p>
+
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="success" onClick={()=>this.editar(this.state.form)}>Editar Usuario</Button>
+                    <Button color="danger" onClick={()=>this.ocultarModalEditar()}>Cancelar</Button>
                 </ModalFooter>
 
             </Modal>
