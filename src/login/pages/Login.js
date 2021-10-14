@@ -7,11 +7,13 @@ import Image from "react-bootstrap/Image";
 import { Grid } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
+import './Login.css';
+
 
 const Login = () => {
   return (
     <div>
-      <Container>
+      <Container className="Logo">
         <Row className="d-flex justify-content-center align-items-center">
           <Col xs={4}>
             <Grid

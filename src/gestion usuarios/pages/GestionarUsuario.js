@@ -6,23 +6,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
 
 
-
-const data = [
-    
-  {Id:'1', Usuario: 'Andres Felipe Perez', Fecha:'12/09/2021', Estado:'Autorizado', Rol:'Administrador'},  
-  {Id:'2', Usuario: 'Jesus Andres Peña', Fecha:'29/09/2021', Estado:'Pendiente', Rol:'Vendedor'},
-  {Id:'3', Usuario: 'Manuel jose Ortiz', Fecha:'16/09/2021', Estado:'No autorizado', Rol:'Vendedor'},
-
-]
-
 class GestionarUsuario extends React.Component{
 
-  state={
-    data:data,
+
+constructor(){
+  super();
+  this.state={
+    datas:[],
     form: {Id:'', Usuario: '', Fecha:'', Estado:'', Rol:''},
     modalInsertar: false,
     modalEditar: false,
-};
+    _id:""
+  };
+
+}
+
+
+componentDidMount() {
+    const apiUrl = 'http://localhost:3004/api/user';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+          this.setState({datas:data})
+
+
+      });
+  };
+
 
 handleChange =(e)=>{
 
@@ -37,6 +47,84 @@ handleChange =(e)=>{
  });
 
 }
+
+
+
+add(){
+    
+    fetch('http://localhost:3004/api/user', {
+      method: 'POST', 
+      body: JSON.stringify({
+  
+          Id: document.getElementById("Id").value,
+          Usuario: document.getElementById("Usuario").value,
+          Fecha: document.getElementById("Fecha").value,
+          Estado: document.getElementById("Estado").value,
+          Rol: document.getElementById("Rol").value,
+
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
+   UpdateUsuario(id){
+    
+    fetch('http://localhost:3004/api/user/'+ id, {
+      method: 'PUT', 
+      body: JSON.stringify({
+  
+          
+        Id: document.getElementById("Id").value,
+        Usuario: document.getElementById("Usuario").value,
+        Fecha: document.getElementById("Fecha").value,
+        Estado: document.getElementById("Estado").value,
+        Rol: document.getElementById("Rol").value,
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
+
+   DeleteUsuario(id){
+    
+    fetch('http://localhost:3004/api/user/'+ id, {
+      method: 'DELETE', 
+      body: JSON.stringify({
+  
+     
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
+  
 
 mostrarModalInsertar=()=>{
  this.setState({modalInsertar:true});
@@ -58,12 +146,13 @@ ocultarModalEditar=()=>{
 insertar= ()=>{
    
    var valorNuevo= {...this.state.form};
-   valorNuevo.Id=this.state.data.length+1;
-   valorNuevo.Estado = document.getElementById("estado").value;
-   valorNuevo.Rol = document.getElementById("rol").value
-   var lista= this.state.data;
+   valorNuevo.Id=this.state.datas.length+5050;
+   valorNuevo.Estado = document.getElementById("Estado").value;
+   valorNuevo.Rol = document.getElementById("Rol").value
+   var lista= this.state.datas;
    lista.push(valorNuevo);
-   this.setState({ modalInsertar: false, data: lista });
+   this.setState({ modalInsertar: false, datas: lista });
+   this.add();
 
 
  }
@@ -71,18 +160,22 @@ insertar= ()=>{
 
  editar = (dato) => {
     var contador = 0;
-    var arreglo = this.state.data;
+    var arreglo = this.state.datas;
     arreglo.map((registro) => {
       if (dato.Id == registro.Id) {
+        arreglo[contador]._id = dato._id;
         arreglo[contador].Usuario = dato.Usuario;
         arreglo[contador].Fecha = dato.Fecha;
-        arreglo[contador].Estado = document.getElementById("estado").value;
-        arreglo[contador].Rol = document.getElementById("rol").value;
+        arreglo[contador].Estado = document.getElementById("Estado").value;
+        arreglo[contador].Rol = document.getElementById("Rol").value;
+        this.UpdateUsuario(dato._id);
+
+
 
       }
       contador++;
     });
-    this.setState({ data: arreglo, modalEditar: false });
+    this.setState({ datas: arreglo, modalEditar: false });
   };
 
 
@@ -90,15 +183,17 @@ eliminar = (dato) => {
     var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.Id);
     if (opcion == true) {
       var contador = 0;
-      var arreglo = this.state.data;
+      var arreglo = this.state.datas;
       arreglo.map((registro) => {
         if (dato.Id == registro.Id) {
           arreglo.splice(contador, 1);
         }
         contador++;
       });
-      this.setState({ data: arreglo, modalEditar: false });
+      this.setState({ datas: arreglo, modalEditar: false });
     }
+    this.DeleteUsuario(dato._id);
+
   };
 
    render(){
@@ -130,7 +225,7 @@ eliminar = (dato) => {
                 <th className="text-center">Acciones</th>
                 </tr></thead>
                 <tbody>
-                    {this.state.data.map((elemento)=>(
+                    {this.state.datas.map((elemento)=>(
                         <tr>
                             <td className="text-center">{elemento.Id}</td>
                             <td className="text-center">{elemento.Usuario}</td>
@@ -155,14 +250,14 @@ eliminar = (dato) => {
                         <div>
                         <label>Id usuario:</label>
                         </div>
-                        <input className="Form-control" readOnly name="Id" type="text"  value = {this.state.data.length+1}/>
+                        <input className="Form-control" readOnly name="Id" id="Id" type="text"  value = {this.state.datas.length+5050}/>
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Usuario:</label>
                         </div>
-                        <input className="Form-control" name="Usuario" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="Usuario" id="Usuario" type="text" onChange={this.handleChange} />
 
                      </FormGroup>
 
@@ -170,7 +265,7 @@ eliminar = (dato) => {
                         <div>
                         <label>Fecha:</label>
                         </div>
-                        <input className="Form-control" name="Fecha" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="Fecha" id ="Fecha" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
@@ -178,7 +273,7 @@ eliminar = (dato) => {
                         <div>
                         <label>Estado:</label>
                         </div>
-                        <select id="estado" className="btn btn-info dropdown-toggle" >
+                        <select id="Estado" className="btn btn-info dropdown-toggle" >
                             <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
                             <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
                             <option className="btn btn-success dropdown-toggle" value="No autorizado">No utorizado</option>
@@ -195,7 +290,7 @@ eliminar = (dato) => {
                         <div>
                         <label>Rol:</label>
                         </div>
-                        <select id="rol" className="btn btn-info dropdown-toggle" >
+                        <select id="Rol" className="btn btn-info dropdown-toggle" >
                             <option className="btn btn-danger dropdown-toggle" value="Administrador">Administrador</option>
                             <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
                         </select>
@@ -219,18 +314,19 @@ eliminar = (dato) => {
                     </div>
                 </ModalHeader>
                 <ModalBody>
+
                     <FormGroup>
                         <div>
                         <label>Id usuario:</label>
                         </div>
-                        <input className="Form-control" readOnly name="Id" type="text"  value = {this.state.form.Id}/>
+                        <input className="Form-control" readOnly name="Id" id="Id" type="text"  value = {this.state.form.Id}/>
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Usuario:</label>
                         </div>
-                        <input className="Form-control" name="Usuario" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Usuario} />
+                        <input className="Form-control" name="Usuario" id="Usuario" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Usuario} />
 
                      </FormGroup>
 
@@ -238,15 +334,15 @@ eliminar = (dato) => {
                         <div>
                         <label>Fecha:</label>
                         </div>
-                        <input className="Form-control" name="Fecha" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Fecha} />
-                    </FormGroup>
+                        <input className="Form-control" name="Fecha" id="Fecha" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Fecha} />
+                    </FormGroup> 
 
                     <FormGroup>
                         <p>
                         <div>
                         <label>Estado:</label>
                         </div>
-                        <select id="estado" className="btn btn-info dropdown-toggle">
+                        <select id="Estado" className="btn btn-info dropdown-toggle">
                             <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
                             <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
                             <option className="btn btn-success dropdown-toggle" value="No autorizado">No utorizado</option>
@@ -263,7 +359,7 @@ eliminar = (dato) => {
                         <div>
                         <label>Rol:</label>
                         </div>
-                        <select id="rol" className="btn btn-info dropdown-toggle" >
+                        <select id="Rol" className="btn btn-info dropdown-toggle" >
                             <option className="btn btn-danger dropdown-toggle" value="Administrador">Administrador</option>
                             <option className="btn btn-success dropdown-toggle" value="Vendedor">Vendedor</option>
                         </select>

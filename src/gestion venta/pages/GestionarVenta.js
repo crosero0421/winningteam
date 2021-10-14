@@ -6,25 +6,33 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
-
-const data = [
-    
-  {IdVenta:'9001', ValorTotalVenta: '5000', Cantidad:'5', PrecioUnitarioCadaProducto:'1000', FechaVenta:'01/08/2021', DocumentoIdentificacion:'10029392', NombreCliente:' Luis', Vendedor:'Andres', EstadoVenta:'En proceso'},
-  {IdVenta:'9002', ValorTotalVenta: '18000', Cantidad:'3', PrecioUnitarioCadaProducto:'6000', FechaVenta:'027/08/2021', DocumentoIdentificacion:'102229392', NombreCliente:' Carlos', Vendedor:'Felipe', EstadoVenta:'Cancelada'},
-
-
-
-]
+//import axios from 'axios';
 
 
 class GestionarVenta extends React.Component{
-state={
-    data:data,
+
+   constructor(){
+    super();
+    this.state={
+    datas:[],
     form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
     modalInsertar: false,
     modalEditar: false,
-};
+    _id:""
+     };
 
+   }
+
+componentDidMount() {
+    const apiUrl = 'http://localhost:3004/api/ventas';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+          this.setState({datas:data})
+
+
+      });
+  };
 
 handleChange =(e)=>{
 
@@ -39,6 +47,90 @@ handleChange =(e)=>{
   });
 
 }
+
+
+
+
+add(){
+    
+    fetch('http://localhost:3004/api/ventas', {
+      method: 'POST', 
+      body: JSON.stringify({
+  
+          IdVenta: document.getElementById("IdVenta").value,
+          ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+          Cantidad: document.getElementById("Cantidad").value,
+          PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
+          FechaVenta: document.getElementById("FechaVenta").value,
+          DocumentoIdentificacion: document.getElementById("DocumentoIdentificacion").value,
+          NombreCliente: document.getElementById("NombreCliente").value,
+          Vendedor: document.getElementById("Vendedor").value,
+          EstadoVenta: document.getElementById("EstadoVenta").value,
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
+
+   UpdateVentas(id){
+    
+    fetch('http://localhost:3004/api/ventas/'+ id, {
+      method: 'PUT', 
+      body: JSON.stringify({
+  
+
+        IdVenta: document.getElementById("IdVenta").value,
+        ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+        Cantidad: document.getElementById("Cantidad").value,
+        PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
+        FechaVenta: document.getElementById("FechaVenta").value,
+        DocumentoIdentificacion: document.getElementById("DocumentoIdentificacion").value,
+        NombreCliente: document.getElementById("NombreCliente").value,
+        Vendedor: document.getElementById("Vendedor").value,
+        EstadoVenta: document.getElementById("EstadoVenta").value,
+
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+  
+
+
+   DeleteVentas(id){
+    
+    fetch('http://localhost:3004/api/ventas/'+ id, {
+      method: 'DELETE', 
+      body: JSON.stringify({
+  
+     
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
 
 /* FUNCIONES PARA MOSTRAR Y OCULTAR EL MODAL DE INSERTAR*/  
 mostrarModalInsertar=()=>{
@@ -63,9 +155,10 @@ ocultarModalEditar=()=>{
 
 editar=(dato)=>{
     var contador= 0;
-    var lista=this.state.data;
+    var lista=this.state.datas;
     lista.map((registro)=>{
         if(dato.IdVenta==registro.IdVenta){
+            lista[contador]._id = dato._id;
             lista[contador].ValorTotalVenta=dato.ValorTotalVenta;
             lista[contador].Cantidad=dato.Cantidad;
             lista[contador].PrecioUnitarioCadaProducto=dato.PrecioUnitarioCadaProducto;
@@ -73,11 +166,15 @@ editar=(dato)=>{
             lista[contador].DocumentoIdentificacion=dato.DocumentoIdentificacion;
             lista[contador].NombreCliente=dato.NombreCliente;
             lista[contador].Vendedor=dato.Vendedor;
-            lista[contador].EstadoVenta=dato.EstadoVenta;
+            lista[contador].EstadoVenta=document.getElementById("EstadoVenta").value;
+            this.UpdateVentas(dato._id);
+
+
         }
         contador++;
     });
     this.setState({data: lista,modalEditar: false});
+
 }
 
 /* FUNCION PARA INSERTAR*/
@@ -85,11 +182,12 @@ editar=(dato)=>{
 insertar= ()=>{
     
     var valorNuevo= {...this.state.form};
-    valorNuevo.IdVenta=this.state.data.length+9001;
-    valorNuevo.EstadoVenta = document.getElementById("estadoventa").value;
-    var lista= this.state.data;
+    valorNuevo.IdVenta=this.state.datas.length+8401;
+    valorNuevo.EstadoVenta = document.getElementById("EstadoVenta").value;
+    var lista= this.state.datas;
     lista.push(valorNuevo);
-    this.setState({ modalInsertar: false, data: lista });
+    this.setState({ modalInsertar: false, datas: lista });
+    this.add();
 
 
   }
@@ -100,15 +198,17 @@ eliminar=(dato)=>{
     var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")
     if(opcion){
         var contador=0;
-        var lista = this.state.data;
+        var lista = this.state.datas;
         lista.map((registro)=>{
             if(registro.IdVenta==dato.IdVenta){
                 lista.splice(contador, 1);
             }
             contador++;
         })
-        this.setState({data:lista});
+        this.setState({datas:lista});
     }
+    this.DeleteVentas(dato._id);
+
 }
 
 
@@ -149,7 +249,7 @@ eliminar=(dato)=>{
                 <th className="text-center">Acciones</th>
                 </tr></thead>
                 <tbody>
-                    {this.state.data.map((elemento)=>(
+                    {this.state.datas.map((elemento)=>(
                         <tr>
                             <td className="text-center">{elemento.IdVenta}</td> 
                             <td className="text-center">{elemento.ValorTotalVenta}</td>
@@ -161,7 +261,8 @@ eliminar=(dato)=>{
                             <td className="text-center">{elemento.Vendedor}</td>
                             <td className="text-center">{elemento.EstadoVenta}</td>
 
-                            <td className="text-center" ><Button className="text-center" color="primary" onClick={()=>this.mostrarModalEditar(elemento)}><FaPencilAlt /> </Button> 
+                            <td className="text-center" ><Button className="text-center" color="primary" onClick={()=>this.mostrarModalEditar(elemento)}><FaPencilAlt /></Button> {" "}
+                            {" "}
                             <Button color="danger" onClick={()=>this.eliminar(elemento)}><FaTimes/></Button></td>
                         </tr>
                     ))}
@@ -175,60 +276,61 @@ eliminar=(dato)=>{
                     </div>
                 </ModalHeader>
                 <ModalBody>
+                    
                     <FormGroup>
                         <div>
                         <label>Id Venta:</label>
                         </div>
-                        <input className="Form-control" readOnly name="IdVenta" type="text"  value = {this.state.data.length+9001}/>
+                        <input className="Form-control" readOnly name="IdVenta" id="IdVenta" type="text"  value = {this.state.datas.length+8401}/>
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Valor total venta:</label>
                         </div>
-                        <input className="Form-control" name="ValorTotalVenta" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} />
                      </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Cantidad:</label>
                         </div>
-                        <input className="Form-control" name="Cantidad" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="Cantidad" type="text" id="Cantidad" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Precio unitario del producto:</label>
                         </div>
-                        <input className="Form-control" name="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="PrecioUnitarioCadaProducto" id ="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Fecha de la venta:</label>
                         </div>
-                        <input className="Form-control" name="FechaVenta" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="FechaVenta" type="text" id="FechaVenta" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Documento de identificacion:</label>
                         </div>
-                        <input className="Form-control" name="DocumentoIdentificacion" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="DocumentoIdentificacion" id ="DocumentoIdentificacion" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Nombre del cliente:</label>
                         </div>
-                        <input className="Form-control" name="NombreCliente" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="NombreCliente" id="NombreCliente" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Vendedor:</label>
                         </div>
-                        <input className="Form-control" name="Vendedor" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="Vendedor" id="Vendedor" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     
@@ -236,7 +338,7 @@ eliminar=(dato)=>{
                         <div>
                         <label>Estado venta:</label>
                         </div>
-                        <select id="estadoventa" className="btn btn-info dropdown-toggle" >
+                        <select id="EstadoVenta" className="btn btn-info dropdown-toggle" >
                             <option className="btn btn-danger dropdown-toggle" value="Proceso">Proceso</option>
                             <option className="btn btn-success dropdown-toggle" value="Cancelada">Cancelada</option>
                             <option className="btn btn-file dropdown-toggle" value="Entregada">Entregada</option>
@@ -250,12 +352,7 @@ eliminar=(dato)=>{
                 </ModalFooter>
             </Modal>
         
-        
-
-
-
-
-
+    
 
 
             <Modal isOpen={this.state.modalEditar}>
@@ -265,60 +362,62 @@ eliminar=(dato)=>{
                     </div>
                 </ModalHeader>
                 <ModalBody>
+
+              
                     <FormGroup>
                         <div>
                         <label>Id Venta:</label>
                         </div>
-                        <input className="Form-control" readOnly name="IdVenta" type="text" value={this.state.form.IdVenta}/>
+                        <input className="Form-control" readOnly name="IdVenta" id="IdVenta" type="text" value={this.state.form.IdVenta}/>
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Valor total venta:</label>
                         </div>
-                        <input className="Form-control" name="ValorTotalVenta" type="text" onChange={this.handleChange} value={this.state.form.ValorTotalVenta}/>
+                        <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} value={this.state.form.ValorTotalVenta}/>
                      </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Cantidad:</label>
                         </div>
-                        <input className="Form-control" name="Cantidad" type="text" onChange={this.handleChange} value={this.state.form.Cantidad} />
+                        <input className="Form-control" name="Cantidad" id="Cantidad" type="text" onChange={this.handleChange} value={this.state.form.Cantidad} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Precio unitario del producto:</label>
                         </div>
-                        <input className="Form-control" name="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} value={this.state.form.PrecioUnitarioCadaProducto} />
+                        <input className="Form-control" name="PrecioUnitarioCadaProducto" id="PrecioUnitarioCadaProducto" type="text" onChange={this.handleChange} value={this.state.form.PrecioUnitarioCadaProducto} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Fecha de la venta:</label>
                         </div>
-                        <input className="Form-control" name="FechaVenta" type="text" onChange={this.handleChange} value={this.state.form.FechaVenta} />
+                        <input className="Form-control" name="FechaVenta" id="FechaVenta" type="text" onChange={this.handleChange} value={this.state.form.FechaVenta} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Documento de identificacion:</label>
                         </div>
-                        <input className="Form-control" name="DocumentoIdentificacion" type="text" onChange={this.handleChange} value={this.state.form.DocumentoIdentificacion} />
+                        <input className="Form-control" name="DocumentoIdentificacion" id="DocumentoIdentificacion" type="text" onChange={this.handleChange} value={this.state.form.DocumentoIdentificacion} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Nombre del cliente:</label>
                         </div>
-                        <input className="Form-control" name="NombreCliente" type="text" onChange={this.handleChange} value={this.state.form.NombreCliente} />
+                        <input className="Form-control" name="NombreCliente" id="NombreCliente" type="text" onChange={this.handleChange} value={this.state.form.NombreCliente} />
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Vendedor:</label>
                         </div>
-                        <input className="Form-control" name="Vendedor" type="text" onChange={this.handleChange} value={this.state.form.Vendedor} />
+                        <input className="Form-control" name="Vendedor" id ="Vendedor" type="text" onChange={this.handleChange} value={this.state.form.Vendedor} />
                     </FormGroup>
 
                     
@@ -326,7 +425,7 @@ eliminar=(dato)=>{
                         <div>
                         <label>Estado venta:</label>
                         </div>
-                        <select id="estadoventa" className="btn btn-info dropdown-toggle"  onChange={this.handleChange} value={this.state.form.EstadoVenta}>
+                        <select id="EstadoVenta" className="btn btn-info dropdown-toggle">
                             <option className="btn btn-danger dropdown-toggle" value="Proceso">Proceso</option>
                             <option className="btn btn-success dropdown-toggle" value="Cancelada">Cancelada</option>
                             <option className="btn btn-file dropdown-toggle" value="Entregada">Entregada</option>

@@ -6,40 +6,126 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
-
-const data = [
-    
-    {IdProducto: 1, Descripcion: "Es recomendado", ValorUnitario: 4000, Estado: "No disponible" },
-    {IdProducto: 2, Descripcion: "Es recomendado", ValorUnitario: 3600, Estado: "Disponible" },
-    {IdProducto: 3, Descripcion: "Es recomendado", ValorUnitario: 55000, Estado: "No disponible" },
-    {IdProducto: 4, Descripcion: "Es recomendado", ValorUnitario: 92000, Estado: "Disponible" },
-    {IdProducto: 5, Descripcion: "Es recomendado", ValorUnitario: 19000, Estado: "No disponible" },
-
-
-]
+import { useEffect, useState } from "react";
+//import axios from 'axios';
 
 
 class GestionarProducto extends React.Component{
-state={
-    data:data,
-    form: {IdProducto:'', Descripcion: '', ValorUnitario:'', Estado:''},
-    modalInsertar: false
-};
 
 
-handleChange =(e)=>{
+    constructor(){
+        super();
 
-   this.setState({
-   form: {
-
-       ...this.state.form,
-       [e.target.name]: e.target.value,
-
-    }
-
-  });
-
+    this.state={
+        datas:[],
+        form: {IdProducto:'', Descripcion: '', ValorUnitario:'', Estado:''},
+        modalInsertar: false,
+        modalEditar: false,
+        _id:""
+    
+    };
+    
 }
+
+componentDidMount() {
+    const apiUrl = 'http://localhost:3004/api/products';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+          this.setState({datas:data})
+
+
+      });
+  };
+
+  handleChange =(e)=>{
+
+    this.setState({
+    form: {
+ 
+        ...this.state.form,
+        [e.target.name]: e.target.value,
+ 
+     }
+ 
+   });
+ 
+ }
+
+
+
+ 
+
+ add(){
+    
+  fetch('http://localhost:3004/api/products', {
+    method: 'POST', 
+    body: JSON.stringify({
+
+        IdProducto: document.getElementById("IdProducto").value,
+        Descripcion: document.getElementById("Descripcion").value,
+        ValorUnitario: document.getElementById("ValorUnitario").value,
+        Estado: document.getElementById("estado").value,
+
+
+    }), 
+    headers:{
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json())
+  .catch(error => console.error('Error:', error))
+  .then(response => console.log('Success:', response));
+
+ }
+
+
+
+ UpdateProducts(id){
+    
+    fetch('http://localhost:3004/api/products/'+ id, {
+      method: 'PUT', 
+      body: JSON.stringify({
+  
+          IdProducto: document.getElementById("IdProducto").value,
+          Descripcion: document.getElementById("Descripcion").value,
+          ValorUnitario: document.getElementById("ValorUnitario").value,
+          Estado: document.getElementById("estado").value,
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
+   DeleteProducts(id){
+    
+    fetch('http://localhost:3004/api/products/'+ id, {
+      method: 'DELETE', 
+      body: JSON.stringify({
+  
+     
+  
+  
+      }), 
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
+  
+   }
+
+
  
 mostrarModalInsertar=()=>{
   this.setState({modalInsertar:true});
@@ -49,24 +135,66 @@ ocultarModalInsertar=()=>{
     this.setState({modalInsertar:false});
   }
 
+mostrarModalEditar=(registro)=>{
+    this.setState({modalEditar:true, form: registro});
+   }
+   
+ocultarModalEditar=()=>{
+      this.setState({modalEditar:false});
+    }
+
 
 insertar= ()=>{
     
     var valorNuevo= {...this.state.form};
-    valorNuevo.IdProducto=this.state.data.length+1;
+    valorNuevo.IdProducto=this.state.datas.length+1;
     valorNuevo.Estado = document.getElementById("estado").value;
-    var lista= this.state.data;
+    var lista= this.state.datas;
     lista.push(valorNuevo);
-    this.setState({ modalInsertar: false, data: lista });
+    this.setState({ modalInsertar: false, datas: lista });
+    this.add();
 
-
+      
   }
 
+  editar = (dato) => {
+    var contador = 0;
+    var arreglo = this.state.datas;
+    arreglo.map((registro) => {
+      if (dato.IdProducto == registro.IdProducto) {
+        arreglo[contador]._id = dato._id;
+        arreglo[contador].Descripcion = dato.Descripcion;
+        arreglo[contador].ValorUnitario = dato.ValorUnitario;
+        arreglo[contador].Estado = document.getElementById("estado").value;
+        this.UpdateProducts(dato._id);
 
 
-    render(){
+
+      }
+      contador++;
+    });
+    this.setState({ datas: arreglo, modalEditar: false });
+  };
+
+eliminar = (dato) => {
+    var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.IdProducto);
+    if (opcion == true) {
+      var contador = 0;
+      var arreglo = this.state.datas;
+      arreglo.map((registro) => {
+        if (dato.IdProducto == registro.IdProducto) {
+          arreglo.splice(contador, 1);
+        }
+        contador++;
+      });
+      this.setState({ datas: arreglo, modalEditar: false });
+    }
+    this.DeleteProducts(dato._id);
+    
+  };
 
 
+   render(){
     return (
 
         <div>
@@ -94,14 +222,14 @@ insertar= ()=>{
                 <th className="text-center">Acciones</th>
                 </tr></thead>
                 <tbody>
-                    {this.state.data.map((elemento)=>(
+                    {this.state.datas.map((elemento)=>(
                         <tr>
                             <td className="text-center">{elemento.IdProducto}</td>
                             <td className="text-center">{elemento.Descripcion}</td>
                             <td className="text-center">{elemento.ValorUnitario}</td>
                             <td className="text-center">{elemento.Estado}</td>
-                            <td className="text-center" ><Button className="text-center" color="primary"><FaPencilAlt /> </Button> 
-                            <Button color="danger"><FaTimes /> </Button></td>
+                            <td className="text-center" ><Button className="text-center" onClick = {()=>this.mostrarModalEditar(elemento)} color="primary"><FaPencilAlt /> </Button> {" "}
+                            <Button onClick={() =>this.eliminar(elemento)} color="danger"><FaTimes /> </Button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -118,21 +246,21 @@ insertar= ()=>{
                         <div>
                         <label>Id Producto:</label>
                         </div>
-                        <input className="Form-control" readOnly name="IdProducto" type="text"  value = {this.state.data.length+1}/>
+                        <input className="Form-control" id="IdProducto" readOnly name="IdProducto" type="text"  value = {this.state.datas.length+1}/>
                     </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Descripcion:</label>
                         </div>
-                        <textarea rows="4" cols="32" name="Descripcion" Type ="text" onChange={this.handleChange} />
+                        <textarea rows="4" cols="32" name="Descripcion"  id="Descripcion" Type ="text" onChange={this.handleChange} />
                      </FormGroup>
 
                     <FormGroup>
                         <div>
                         <label>Valor unitario:</label>
                         </div>
-                        <input className="Form-control" name="ValorUnitario" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="ValorUnitario" id="ValorUnitario" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
@@ -149,8 +277,60 @@ insertar= ()=>{
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={()=>this.insertar()}>Agregar Producto</Button>
+                    <Button color="success" onClick={()=>this.insertar()}  >Agregar Producto</Button>
                     <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>
+                </ModalFooter>
+
+            </Modal>
+
+
+
+
+            <Modal isOpen={this.state.modalEditar}>
+                <ModalHeader>
+                    <div>
+                        <h3>Registrar Producto</h3>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+
+                    <FormGroup>
+                        <div>
+                        <label>Id Producto:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="IdProducto" type="text"  id="IdProducto" value = {this.state.form.IdProducto}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Descripcion:</label>
+                        </div>
+                        <textarea rows="4" cols="32" name="Descripcion" Type ="text" id="Descripcion" onChange={this.handleChange} value = {this.state.form.Descripcion}/>
+                     </FormGroup>
+
+                    <FormGroup>
+                        <div>
+                        <label>Valor unitario:</label>
+                        </div>
+                        <input className="Form-control" name="ValorUnitario" id ="ValorUnitario" type="text" onChange={this.handleChange} value = {this.state.form.ValorUnitario}/>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <p>
+                        <div>
+                        <label>Estado:</label>
+                        </div>
+                        <select id="estado" className="btn btn-info dropdown-toggle" >
+                            <option className="btn btn-danger dropdown-toggle" value="No disponible">No disponible</option>
+                            <option className="btn btn-success dropdown-toggle" value="Disponible">Disponible</option>
+                        </select>
+                        </p>
+
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="success" onClick={()=>this.editar(this.state.form)}>Editar Producto</Button>
+                    <Button color="danger" onClick={()=>this.ocultarModalEditar()}>Cancelar</Button>
                 </ModalFooter>
 
             </Modal>
@@ -158,6 +338,6 @@ insertar= ()=>{
 
        )
     }
-}      
     
+  }
 export default GestionarProducto;
