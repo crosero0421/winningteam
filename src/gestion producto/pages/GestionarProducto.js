@@ -7,6 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
 //import axios from 'axios';
 
 
@@ -154,6 +155,13 @@ insertar= ()=>{
     this.setState({ modalInsertar: false, datas: lista });
     this.add();
 
+    Swal.fire({
+      title: 'Producto agregado correctamente!',
+      icon: "success",
+      timer: '1700',
+
+    });
+
       
   }
 
@@ -174,6 +182,12 @@ insertar= ()=>{
       contador++;
     });
     this.setState({ datas: arreglo, modalEditar: false });
+    Swal.fire({
+      title: 'Producto editado correctamente!',
+      icon: "success",
+      timer: '1700',
+
+    });
   };
 
 eliminar = (dato) => {

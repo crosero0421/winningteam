@@ -4,6 +4,7 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import Form from 'react-bootstrap/Form'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+import Swal from 'sweetalert2';
 
 
 class GestionarUsuario extends React.Component{
@@ -154,6 +155,13 @@ insertar= ()=>{
    this.setState({ modalInsertar: false, datas: lista });
    this.add();
 
+   Swal.fire({
+    title: 'Usuario agregado correctamente!',
+    icon: "success",
+    timer: '1700',
+
+  });
+
 
  }
 
@@ -176,6 +184,12 @@ insertar= ()=>{
       contador++;
     });
     this.setState({ datas: arreglo, modalEditar: false });
+    Swal.fire({
+      title: 'Usuario editado correctamente!',
+      icon: "success",
+      timer: '1700',
+
+    });
   };
 
 

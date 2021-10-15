@@ -6,6 +6,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 //import axios from 'axios';
 
 
@@ -151,6 +152,13 @@ ocultarModalEditar=()=>{
       this.setState({modalEditar:false});
 }
 
+mostraralert=()=>{
+    Swal.fire(
+        'Good job!',
+        'You clicked the button!',
+        'success'
+      )
+}
 /* FUNCION PARA EDITAR*/
 
 editar=(dato)=>{
@@ -168,14 +176,20 @@ editar=(dato)=>{
             lista[contador].Vendedor=dato.Vendedor;
             lista[contador].EstadoVenta=document.getElementById("EstadoVenta").value;
             this.UpdateVentas(dato._id);
-
-
+            
         }
         contador++;
     });
     this.setState({data: lista,modalEditar: false});
+    Swal.fire({
+        title: 'Venta editada correctamente!',
+        icon: "success",
+        timer: '1700',
+
+    });
 
 }
+
 
 /* FUNCION PARA INSERTAR*/
 
@@ -189,13 +203,20 @@ insertar= ()=>{
     this.setState({ modalInsertar: false, datas: lista });
     this.add();
 
+    Swal.fire({
+        title: 'Venta agregada correctamente!',
+        icon: "success",
+        timer: '1700',
+
+    });
+
 
   }
 
 /* FUNCION PARA ELIMINAR*/
 
 eliminar=(dato)=>{
-    var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")
+    var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")    
     if(opcion){
         var contador=0;
         var lista = this.state.datas;
