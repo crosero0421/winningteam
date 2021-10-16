@@ -7,6 +7,8 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
+
 //import axios from 'axios';
 
 
@@ -81,9 +83,9 @@ componentDidMount() {
 
 
 
- UpdateProducts(id){
+ UpdateProducts(){
     
-    fetch('http://localhost:3004/api/products/'+ id, {
+    fetch('http://localhost:3004/api/products/'+ document.getElementById("_id").value, {
       method: 'PUT', 
       body: JSON.stringify({
   
@@ -144,37 +146,53 @@ ocultarModalEditar=()=>{
     }
 
 
-insertar= ()=>{
+
+    insertar= ()=>{
     
-    var valorNuevo= {...this.state.form};
-    valorNuevo.IdProducto=this.state.datas.length+1;
-    valorNuevo.Estado = document.getElementById("estado").value;
-    var lista= this.state.datas;
-    lista.push(valorNuevo);
-    this.setState({ modalInsertar: false, datas: lista });
-    this.add();
+      var valorNuevo= {...this.state.form};
+      valorNuevo.IdProducto=this.state.datas.length+1;
+      valorNuevo.Estado = document.getElementById("estado").value;
+      var lista= this.state.datas;
+      lista.push(valorNuevo);
+      this.setState({ modalInsertar: false, datas: lista });
+      this.add();
+  
+      Swal.fire({
+        title: 'Producto agregado correctamente!',
+        icon: "success",
+        timer: '1700',
+  
+      });
+  
+        
+    }
 
-      
-  }
+ 
+    editar = (dato) => {
 
-  editar = (dato) => {
-    var contador = 0;
-    var arreglo = this.state.datas;
-    arreglo.map((registro) => {
-      if (dato.IdProducto == registro.IdProducto) {
-        arreglo[contador]._id = dato._id;
-        arreglo[contador].Descripcion = dato.Descripcion;
-        arreglo[contador].ValorUnitario = dato.ValorUnitario;
-        arreglo[contador].Estado = document.getElementById("estado").value;
-        this.UpdateProducts(dato._id);
-
-
-
-      }
-      contador++;
-    });
-    this.setState({ datas: arreglo, modalEditar: false });
-  };
+      var contador = 0;
+      var arreglo = this.state.datas;
+      arreglo.map((registro) => {
+        if (dato.IdProducto == registro.IdProducto) {
+          arreglo[contador]._id = dato._id;
+          arreglo[contador].Descripcion = dato.Descripcion;
+          arreglo[contador].ValorUnitario = dato.ValorUnitario;
+          arreglo[contador].Estado = document.getElementById("estado").value;
+  
+  
+  
+        }
+        contador++;
+      });
+      this.setState({ datas: arreglo, modalEditar: false });
+      Swal.fire({
+        title: 'Producto editado correctamente!',
+        icon: "success",
+        timer: '1700',
+  
+      });
+      this.UpdateProducts();
+    };
 
 eliminar = (dato) => {
     var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.IdProducto);
@@ -197,7 +215,7 @@ eliminar = (dato) => {
    render(){
     return (
 
-        <div>
+        <div className="div">
             <Container className="body">
             <h1 className="text-center">Gestion productos</h1>
             <form>
@@ -293,6 +311,13 @@ eliminar = (dato) => {
                     </div>
                 </ModalHeader>
                 <ModalBody>
+
+                <FormGroup>
+                        <div>
+                        <label>Id Object:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="_id" type="text"  id="_id" onChange={this.handleChange} value = {this.state.form._id}/>
+                    </FormGroup>
 
                     <FormGroup>
                         <div>

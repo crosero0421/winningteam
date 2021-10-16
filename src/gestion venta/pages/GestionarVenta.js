@@ -6,6 +6,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+import Swal from 'sweetalert2';
+
 //import axios from 'axios';
 
 
@@ -80,9 +82,9 @@ add(){
 
 
 
-   UpdateVentas(id){
+   UpdateVentas(){
     
-    fetch('http://localhost:3004/api/ventas/'+ id, {
+    fetch('http://localhost:3004/api/ventas/'+ document.getElementById("_id").value, {
       method: 'PUT', 
       body: JSON.stringify({
   
@@ -167,15 +169,24 @@ editar=(dato)=>{
             lista[contador].NombreCliente=dato.NombreCliente;
             lista[contador].Vendedor=dato.Vendedor;
             lista[contador].EstadoVenta=document.getElementById("EstadoVenta").value;
-            this.UpdateVentas(dato._id);
-
-
+            
+            
+        
         }
         contador++;
     });
     this.setState({data: lista,modalEditar: false});
+    Swal.fire({
+        title: 'Venta editada correctamente!',
+        icon: "success",
+        timer: '1700',
+
+    });
+    this.UpdateVentas();
+
 
 }
+
 
 /* FUNCION PARA INSERTAR*/
 
@@ -189,8 +200,15 @@ insertar= ()=>{
     this.setState({ modalInsertar: false, datas: lista });
     this.add();
 
+    Swal.fire({
+        title: 'Venta agregada correctamente!',
+        icon: "success",
+        timer: '1700',
+
+    });
 
   }
+
 
 /* FUNCION PARA ELIMINAR*/
 
@@ -217,7 +235,7 @@ eliminar=(dato)=>{
 
     return (
 
-        <div>
+        <div className="div">
             <Container className="body"> 
             <h1 className="text-center">Gestion ventas</h1>
             
@@ -363,7 +381,13 @@ eliminar=(dato)=>{
                 </ModalHeader>
                 <ModalBody>
 
-              
+                <FormGroup>
+                        <div>
+                        <label>Id Object</label>
+                        </div>
+                        <input className="Form-control" readOnly name="Id" id="IdVenta" id="_id" type="text" value={this.state.form._id}/>
+                    </FormGroup>
+
                     <FormGroup>
                         <div>
                         <label>Id Venta:</label>
