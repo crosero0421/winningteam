@@ -23,11 +23,40 @@ class GestionarProducto extends React.Component{
         form: {IdProducto:'', Descripcion: '', ValorUnitario:'', Estado:''},
         modalInsertar: false,
         modalEditar: false,
-        _id:""
+        _id:"",
+        busqueda:"",
+        datas22:[],
+
+ 
+
     
     };
     
 }
+
+filtrarElementos=()=>{
+  var search = this.state.datas22.filter(item=>{
+    if(item.IdProducto.toString().includes(this.state.busqueda) ){
+      return item;
+    }
+  });
+
+  this.setState({datas: search});
+  
+
+
+}
+
+
+onChange = async e => {
+  await this.setState({busqueda: e.target.value});
+  console.log(this.state.busqueda);
+  this.filtrarElementos();
+
+}
+
+
+
 
 componentDidMount() {
     const apiUrl = 'http://localhost:3004/api/products';
@@ -35,6 +64,8 @@ componentDidMount() {
       .then((response) => response.json())
       .then((data) => {
           this.setState({datas:data})
+          this.setState({datas22:data})
+
 
 
       });
@@ -78,6 +109,7 @@ componentDidMount() {
   }).then(res => res.json())
   .catch(error => console.error('Error:', error))
   .then(response => console.log('Success:', response));
+  setTimeout("document.location = document.location", 2000);
 
  }
 
@@ -220,13 +252,10 @@ eliminar = (dato) => {
             <h1 className="text-center">Gestion productos</h1>
             <form>
                 <p>
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button className ="" color="primary" >Buscar Producto</Button>
-                 </div>
                 <div>
                 <label>ID</label>
                 </div>
-                  <Form.Control type="text" placeholder="Busqueda de producto por ID" />
+                  <Form.Control type="text" placeholder="Busqueda de producto por ID de producto" onChange={this.onChange}  value={this.state.busqueda}/>
                 </p>
             </form>
             <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Agregar Producto</Button>
@@ -241,7 +270,7 @@ eliminar = (dato) => {
                 </tr></thead>
                 <tbody>
                     {this.state.datas.map((elemento)=>(
-                        <tr>
+                        <tr key={elemento._id}>
                             <td className="text-center">{elemento.IdProducto}</td>
                             <td className="text-center">{elemento.Descripcion}</td>
                             <td className="text-center">{elemento.ValorUnitario}</td>

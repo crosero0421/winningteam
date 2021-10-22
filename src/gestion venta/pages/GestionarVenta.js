@@ -17,13 +17,55 @@ class GestionarVenta extends React.Component{
     super();
     this.state={
     datas:[],
-    form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
+    form: {IdVenta:'',ValorTotalVenta: '', IdProducto:'',  Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
     modalInsertar: false,
     modalEditar: false,
-    _id:""
+    _id:"",
+    products:[],
+    datas22:[],
+    busqueda:"",
+
+
+
      };
 
    }
+
+   filtrarElementos=()=>{
+    var search = this.state.datas22.filter(item=>{
+      if(item.IdVenta.toString().includes(this.state.busqueda) ){
+        return item;
+      }
+    });
+  
+    this.setState({datas: search});
+    
+  
+  
+  }
+  
+  
+  onChange = async e => {
+    await this.setState({busqueda: e.target.value});
+    console.log(this.state.busqueda);
+    this.filtrarElementos();
+  
+  }
+  
+
+
+   componentDidMount1() {
+    const apiUrl = 'http://localhost:3004/api/products';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+          this.setState({products:data})
+
+
+      });
+  };
+
+
 
 componentDidMount() {
     const apiUrl = 'http://localhost:3004/api/ventas';
@@ -31,6 +73,10 @@ componentDidMount() {
       .then((response) => response.json())
       .then((data) => {
           this.setState({datas:data})
+          this.componentDidMount1()
+          this.setState({datas22:data})
+
+
 
 
       });
@@ -51,6 +97,19 @@ handleChange =(e)=>{
 }
 
 
+  handleChange =(e)=>{
+
+    this.setState({
+    form: {
+ 
+        ...this.state.form,
+        [e.target.name]: e.target.value,
+ 
+     }
+ 
+   });
+ 
+ }
 
 
 add(){
@@ -61,6 +120,7 @@ add(){
   
           IdVenta: document.getElementById("IdVenta").value,
           ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+          IdProducto: document.getElementById("IdProducto").value,
           Cantidad: document.getElementById("Cantidad").value,
           PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
           FechaVenta: document.getElementById("FechaVenta").value,
@@ -77,6 +137,8 @@ add(){
     }).then(res => res.json())
     .catch(error => console.error('Error:', error))
     .then(response => console.log('Success:', response));
+    setTimeout("document.location = document.location", 2000);
+
   
    }
 
@@ -91,6 +153,7 @@ add(){
 
         IdVenta: document.getElementById("IdVenta").value,
         ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+        IdProducto: document.getElementById("IdProducto").value,
         Cantidad: document.getElementById("Cantidad").value,
         PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
         FechaVenta: document.getElementById("FechaVenta").value,
@@ -162,6 +225,7 @@ editar=(dato)=>{
         if(dato.IdVenta==registro.IdVenta){
             lista[contador]._id = dato._id;
             lista[contador].ValorTotalVenta=dato.ValorTotalVenta;
+            lista[contador].IdProducto = document.getElementById("IdProducto").value;
             lista[contador].Cantidad=dato.Cantidad;
             lista[contador].PrecioUnitarioCadaProducto=dato.PrecioUnitarioCadaProducto;
             lista[contador].FechaVenta=dato.FechaVenta;
@@ -195,6 +259,8 @@ insertar= ()=>{
     var valorNuevo= {...this.state.form};
     valorNuevo.IdVenta=this.state.datas.length+8401;
     valorNuevo.EstadoVenta = document.getElementById("EstadoVenta").value;
+    valorNuevo.IdProducto = document.getElementById("IdProducto").value;
+
     var lista= this.state.datas;
     lista.push(valorNuevo);
     this.setState({ modalInsertar: false, datas: lista });
@@ -241,14 +307,10 @@ eliminar=(dato)=>{
             
             <form>
                 <p>
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button className ="" color="primary" >Buscar Venta</Button>
-                 </div>
-                <div>
-                    
+                <div> 
                 <label>ID</label>
                 </div>
-                  <Form.Control type="text" placeholder="Busqueda de venta por ID" />
+                  <Form.Control type="text" placeholder="Busqueda de venta por ID de venta" onChange={this.onChange}  value={this.state.busqueda}/>
                 </p>
 
             </form>
@@ -257,6 +319,7 @@ eliminar=(dato)=>{
             <Table>
                 <thead><tr><th className="text-center">ID Venta</th> 
                 <th className="text-center">Valor total de la venta</th>
+                <th className="text-center">ID del producto</th>
                 <th className="text-center">Cantidad</th>
                 <th className="text-center">Precio unitario del producto</th>
                 <th className="text-center">Fecha de la Venta</th>
@@ -268,9 +331,10 @@ eliminar=(dato)=>{
                 </tr></thead>
                 <tbody>
                     {this.state.datas.map((elemento)=>(
-                        <tr>
-                            <td className="text-center">{elemento.IdVenta}</td> 
+                        <tr key={elemento._id}>
+                            <td className="text-center">{elemento.IdVenta}</td>
                             <td className="text-center">{elemento.ValorTotalVenta}</td>
+                            <td className="text-center">{elemento.IdProducto}</td>
                             <td className="text-center">{elemento.Cantidad}</td>
                             <td className="text-center">{elemento.PrecioUnitarioCadaProducto}</td>
                             <td className="text-center">{elemento.FechaVenta}</td>
@@ -308,6 +372,22 @@ eliminar=(dato)=>{
                         </div>
                         <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} />
                      </FormGroup>
+
+                       
+                    <FormGroup>
+                        <div>
+                        <label>Id producto</label>
+                        </div>
+
+                        <select id="IdProducto" className="btn btn-info dropdown-toggle" name="IdProducto" >
+                            {this.state.products.map((elementos)=>(
+
+                            <option key={elementos.IdProducto} className="btn btn-danger dropdown-toggle" value={elementos.IdProducto} >{elementos.IdProducto}</option>
+                            ))}
+                        </select>
+
+                    </FormGroup>
+
 
                     <FormGroup>
                         <div>
@@ -385,7 +465,7 @@ eliminar=(dato)=>{
                         <div>
                         <label>Id Object</label>
                         </div>
-                        <input className="Form-control" readOnly name="Id" id="IdVenta" id="_id" type="text" value={this.state.form._id}/>
+                        <input className="Form-control" readOnly name="Id" id="_id" type="text" value={this.state.form._id}/>
                     </FormGroup>
 
                     <FormGroup>
@@ -401,6 +481,21 @@ eliminar=(dato)=>{
                         </div>
                         <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} value={this.state.form.ValorTotalVenta}/>
                      </FormGroup>
+
+                          
+                    <FormGroup>
+                        <div>
+                        <label>Id producto</label>
+                        </div>
+
+                        <select id="IdProducto" className="btn btn-info dropdown-toggle" name="IdProducto" >
+                            {this.state.products.map((elementos)=>(
+
+                            <option key={elementos.IdProducto} className="btn btn-danger dropdown-toggle" value={elementos.IdProducto} >{elementos.IdProducto}</option>
+                            ))}
+                        </select>
+
+                    </FormGroup>
 
                     <FormGroup>
                         <div>

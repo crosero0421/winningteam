@@ -15,11 +15,35 @@ constructor(){
   super();
   this.state={
     datas:[],
-    form: {Id:'', Usuario: '', Fecha:'', Estado:'', Rol:''},
+    form: {Id:'', Usuario: '', Correo:'', Estado:'', Rol:''},
     modalInsertar: false,
     modalEditar: false,
-    _id:""
+    _id:"",
+    datas22:[],
+    busqueda:"",
+
   };
+
+}
+
+filtrarElementos=()=>{
+  var search = this.state.datas22.filter(item=>{
+    if(item.Id.toString().includes(this.state.busqueda) ){
+      return item;
+    }
+  });
+
+  this.setState({datas: search});
+  
+
+
+}
+
+
+onChange = async e => {
+  await this.setState({busqueda: e.target.value});
+  console.log(this.state.busqueda);
+  this.filtrarElementos();
 
 }
 
@@ -30,6 +54,8 @@ componentDidMount() {
       .then((response) => response.json())
       .then((data) => {
           this.setState({datas:data})
+          this.setState({datas22:data})
+
 
 
       });
@@ -60,7 +86,7 @@ add(){
   
           Id: document.getElementById("Id").value,
           Usuario: document.getElementById("Usuario").value,
-          Fecha: document.getElementById("Fecha").value,
+          Correo: document.getElementById("Correo").value,
           Estado: document.getElementById("Estado").value,
           Rol: document.getElementById("Rol").value,
 
@@ -74,6 +100,8 @@ add(){
     }).then(res => res.json())
     .catch(error => console.error('Error:', error))
     .then(response => console.log('Success:', response));
+    setTimeout("document.location = document.location", 2000);
+
   
    }
 
@@ -87,7 +115,7 @@ add(){
           
         Id: document.getElementById("Id").value,
         Usuario: document.getElementById("Usuario").value,
-        Fecha: document.getElementById("Fecha").value,
+        Correo: document.getElementById("Correo").value,
         Estado: document.getElementById("Estado").value,
         Rol: document.getElementById("Rol").value,
   
@@ -174,7 +202,7 @@ ocultarModalEditar=()=>{
          if (dato.Id == registro.Id) {
            arreglo[contador]._id = dato._id;
            arreglo[contador].Usuario = dato.Usuario;
-           arreglo[contador].Fecha = dato.Fecha;
+           arreglo[contador].Correo = dato.Correo;
            arreglo[contador].Estado = document.getElementById("Estado").value;
            arreglo[contador].Rol = document.getElementById("Rol").value;
    
@@ -185,7 +213,7 @@ ocultarModalEditar=()=>{
        });
        this.setState({ datas: arreglo, modalEditar: false });
        Swal.fire({
-         title: 'Usuario editado correctamente!',
+         title: 'Estado o rol de usuario editado correctamente!',
          icon: "success",
          timer: '1700',
    
@@ -220,13 +248,10 @@ eliminar = (dato) => {
             <h1 className="text-center">Gestion Usuario</h1>
             <form>
                 <p>
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button className ="" color="primary" >Buscar usuario</Button>
-                 </div>
                 <div>
                 <label>ID</label>
                 </div>
-                  <Form.Control type="text" placeholder="Busqueda de usuario por ID" />
+                  <Form.Control type="text" placeholder="Busqueda de usuario por ID de usuario" onChange={this.onChange}  value={this.state.busqueda}/>
                 </p>
             </form>
             <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Agregar Usuario</Button>
@@ -235,17 +260,17 @@ eliminar = (dato) => {
             <Table>
                 <thead><tr><th className="text-center">ID Usuario</th>
                 <th className="text-center">Usuario</th>
-                <th className="text-center">Fecha</th>
+                <th className="text-center">Correo</th>
                 <th className="text-center">Estado</th>
                 <th className="text-center">Rol</th>
                 <th className="text-center">Acciones</th>
                 </tr></thead>
                 <tbody>
                     {this.state.datas.map((elemento)=>(
-                        <tr>
+                        <tr key={elemento._id}>
                             <td className="text-center">{elemento.Id}</td>
                             <td className="text-center">{elemento.Usuario}</td>
-                            <td className="text-center">{elemento.Fecha}</td>
+                            <td className="text-center">{elemento.Correo}</td>
                             <td className="text-center">{elemento.Estado}</td>
                             <td className="text-center">{elemento.Rol}</td>
                             <td className="text-center" ><Button onClick = {()=>this.mostrarModalEditar(elemento)}  className="text-center" color="primary"><FaPencilAlt /> </Button> {" "}
@@ -279,9 +304,9 @@ eliminar = (dato) => {
 
                     <FormGroup>
                         <div>
-                        <label>Fecha:</label>
+                        <label>Correo:</label>
                         </div>
-                        <input className="Form-control" name="Fecha" id ="Fecha" type="text" onChange={this.handleChange} />
+                        <input className="Form-control" name="Correo" id ="Correo" type="text" onChange={this.handleChange} />
                     </FormGroup>
 
                     <FormGroup>
@@ -357,9 +382,9 @@ eliminar = (dato) => {
 
                     <FormGroup>
                         <div>
-                        <label>Fecha:</label>
+                        <label>Correo:</label>
                         </div>
-                        <input className="Form-control" name="Fecha" id="Fecha" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Fecha} />
+                        <input className="Form-control" name="Correo" id="Correo" readOnly type="text" onChange={this.handleChange} value = {this.state.form.Correo} />
                     </FormGroup> 
 
                     <FormGroup>
@@ -370,7 +395,7 @@ eliminar = (dato) => {
                         <select id="Estado" className="btn btn-info dropdown-toggle">
                             <option className="btn btn-danger dropdown-toggle" value="Pendiente">Pendiente</option>
                             <option className="btn btn-success dropdown-toggle" value="Autorizado">Autorizado</option>
-                            <option className="btn btn-success dropdown-toggle" value="No autorizado">No utorizado</option>
+                            <option className="btn btn-success dropdown-toggle" value="No autorizado">No autorizado</option>
 
                         </select>
                         </p>

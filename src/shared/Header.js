@@ -8,7 +8,6 @@ const Header = ({ isLoggedIn, login }) => {
     <Navbar fixed="top" bg="success" expand="lg" variant="dark">
       <Container>
         <Navbar.Brand href="/">Inicio</Navbar.Brand>
-
         <Nav className="justify-content-end">
           <HeaderButtons isLoggedIn={isLoggedIn} setLogin={login} />
         </Nav>

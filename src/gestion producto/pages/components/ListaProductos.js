@@ -64,8 +64,8 @@ const ListaProductos = () => {
     <Container className="body">
       <Row >
         {productos.map((producto) => (
-          <Col xs={4}>
-            <Producto producto={producto} />
+          <Col xs={4} key={producto._id}>
+            <Producto producto={producto} key={producto._id} />
           </Col>
         ))}
       </Row>
