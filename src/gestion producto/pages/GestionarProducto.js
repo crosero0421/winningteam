@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
+
 //import axios from 'axios';
 
 
@@ -22,11 +23,40 @@ class GestionarProducto extends React.Component{
         form: {IdProducto:'', Descripcion: '', ValorUnitario:'', Estado:''},
         modalInsertar: false,
         modalEditar: false,
-        _id:""
+        _id:"",
+        busqueda:"",
+        datas22:[],
+
+ 
+
     
     };
     
 }
+
+filtrarElementos=()=>{
+  var search = this.state.datas22.filter(item=>{
+    if(item.IdProducto.toString().includes(this.state.busqueda) ){
+      return item;
+    }
+  });
+
+  this.setState({datas: search});
+  
+
+
+}
+
+
+onChange = async e => {
+  await this.setState({busqueda: e.target.value});
+  console.log(this.state.busqueda);
+  this.filtrarElementos();
+
+}
+
+
+
 
 componentDidMount() {
     const apiUrl = 'http://localhost:3004/api/products';
@@ -34,6 +64,8 @@ componentDidMount() {
       .then((response) => response.json())
       .then((data) => {
           this.setState({datas:data})
+          this.setState({datas22:data})
+
 
 
       });
@@ -77,14 +109,15 @@ componentDidMount() {
   }).then(res => res.json())
   .catch(error => console.error('Error:', error))
   .then(response => console.log('Success:', response));
+  setTimeout("document.location = document.location", 2000);
 
  }
 
 
 
- UpdateProducts(id){
+ UpdateProducts(){
     
-    fetch('http://localhost:3004/api/products/'+ id, {
+    fetch('http://localhost:3004/api/products/'+ document.getElementById("_id").value, {
       method: 'PUT', 
       body: JSON.stringify({
   
@@ -145,50 +178,53 @@ ocultarModalEditar=()=>{
     }
 
 
-insertar= ()=>{
+
+    insertar= ()=>{
     
-    var valorNuevo= {...this.state.form};
-    valorNuevo.IdProducto=this.state.datas.length+1;
-    valorNuevo.Estado = document.getElementById("estado").value;
-    var lista= this.state.datas;
-    lista.push(valorNuevo);
-    this.setState({ modalInsertar: false, datas: lista });
-    this.add();
+      var valorNuevo= {...this.state.form};
+      valorNuevo.IdProducto=this.state.datas.length+1;
+      valorNuevo.Estado = document.getElementById("estado").value;
+      var lista= this.state.datas;
+      lista.push(valorNuevo);
+      this.setState({ modalInsertar: false, datas: lista });
+      this.add();
+  
+      Swal.fire({
+        title: 'Producto agregado correctamente!',
+        icon: "success",
+        timer: '1700',
+  
+      });
+  
+        
+    }
 
-    Swal.fire({
-      title: 'Producto agregado correctamente!',
-      icon: "success",
-      timer: '1700',
+ 
+    editar = (dato) => {
 
-    });
-
-      
-  }
-
-  editar = (dato) => {
-    var contador = 0;
-    var arreglo = this.state.datas;
-    arreglo.map((registro) => {
-      if (dato.IdProducto == registro.IdProducto) {
-        arreglo[contador]._id = dato._id;
-        arreglo[contador].Descripcion = dato.Descripcion;
-        arreglo[contador].ValorUnitario = dato.ValorUnitario;
-        arreglo[contador].Estado = document.getElementById("estado").value;
-        this.UpdateProducts(dato._id);
-
-
-
-      }
-      contador++;
-    });
-    this.setState({ datas: arreglo, modalEditar: false });
-    Swal.fire({
-      title: 'Producto editado correctamente!',
-      icon: "success",
-      timer: '1700',
-
-    });
-  };
+      var contador = 0;
+      var arreglo = this.state.datas;
+      arreglo.map((registro) => {
+        if (dato.IdProducto == registro.IdProducto) {
+          arreglo[contador]._id = dato._id;
+          arreglo[contador].Descripcion = dato.Descripcion;
+          arreglo[contador].ValorUnitario = dato.ValorUnitario;
+          arreglo[contador].Estado = document.getElementById("estado").value;
+  
+  
+  
+        }
+        contador++;
+      });
+      this.setState({ datas: arreglo, modalEditar: false });
+      Swal.fire({
+        title: 'Producto editado correctamente!',
+        icon: "success",
+        timer: '1700',
+  
+      });
+      this.UpdateProducts();
+    };
 
 eliminar = (dato) => {
     var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.IdProducto);
@@ -211,18 +247,15 @@ eliminar = (dato) => {
    render(){
     return (
 
-        <div>
+        <div className="div">
             <Container className="body">
             <h1 className="text-center">Gestion productos</h1>
             <form>
                 <p>
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button className ="" color="primary" >Buscar Producto</Button>
-                 </div>
                 <div>
                 <label>ID</label>
                 </div>
-                  <Form.Control type="text" placeholder="Busqueda de producto por ID" />
+                  <Form.Control type="text" placeholder="Busqueda de producto por ID de producto" onChange={this.onChange}  value={this.state.busqueda}/>
                 </p>
             </form>
             <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Agregar Producto</Button>
@@ -237,7 +270,7 @@ eliminar = (dato) => {
                 </tr></thead>
                 <tbody>
                     {this.state.datas.map((elemento)=>(
-                        <tr>
+                        <tr key={elemento._id}>
                             <td className="text-center">{elemento.IdProducto}</td>
                             <td className="text-center">{elemento.Descripcion}</td>
                             <td className="text-center">{elemento.ValorUnitario}</td>
@@ -307,6 +340,13 @@ eliminar = (dato) => {
                     </div>
                 </ModalHeader>
                 <ModalBody>
+
+                <FormGroup>
+                        <div>
+                        <label>Id Object:</label>
+                        </div>
+                        <input className="Form-control" readOnly name="_id" type="text"  id="_id" onChange={this.handleChange} value = {this.state.form._id}/>
+                    </FormGroup>
 
                     <FormGroup>
                         <div>

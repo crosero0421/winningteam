@@ -7,6 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Form from 'react-bootstrap/Form'
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+
 //import axios from 'axios';
 
 
@@ -16,13 +17,55 @@ class GestionarVenta extends React.Component{
     super();
     this.state={
     datas:[],
-    form: {IdVenta:'', ValorTotalVenta: '', Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
+    form: {IdVenta:'',ValorTotalVenta: '', IdProducto:'',  Cantidad:'', PrecioUnitarioCadaProducto:'', FechaVenta:'', DocumentoIdentificacion:'', NombreCliente:'', Vendedor:'', EstadoVenta:''},
     modalInsertar: false,
     modalEditar: false,
-    _id:""
+    _id:"",
+    products:[],
+    datas22:[],
+    busqueda:"",
+
+
+
      };
 
    }
+
+   filtrarElementos=()=>{
+    var search = this.state.datas22.filter(item=>{
+      if(item.IdVenta.toString().includes(this.state.busqueda) ){
+        return item;
+      }
+    });
+  
+    this.setState({datas: search});
+    
+  
+  
+  }
+  
+  
+  onChange = async e => {
+    await this.setState({busqueda: e.target.value});
+    console.log(this.state.busqueda);
+    this.filtrarElementos();
+  
+  }
+  
+
+
+   componentDidMount1() {
+    const apiUrl = 'http://localhost:3004/api/products';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+          this.setState({products:data})
+
+
+      });
+  };
+
+
 
 componentDidMount() {
     const apiUrl = 'http://localhost:3004/api/ventas';
@@ -30,6 +73,10 @@ componentDidMount() {
       .then((response) => response.json())
       .then((data) => {
           this.setState({datas:data})
+          this.componentDidMount1()
+          this.setState({datas22:data})
+
+
 
 
       });
@@ -50,6 +97,19 @@ handleChange =(e)=>{
 }
 
 
+  handleChange =(e)=>{
+
+    this.setState({
+    form: {
+ 
+        ...this.state.form,
+        [e.target.name]: e.target.value,
+ 
+     }
+ 
+   });
+ 
+ }
 
 
 add(){
@@ -60,6 +120,7 @@ add(){
   
           IdVenta: document.getElementById("IdVenta").value,
           ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+          IdProducto: document.getElementById("IdProducto").value,
           Cantidad: document.getElementById("Cantidad").value,
           PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
           FechaVenta: document.getElementById("FechaVenta").value,
@@ -76,20 +137,23 @@ add(){
     }).then(res => res.json())
     .catch(error => console.error('Error:', error))
     .then(response => console.log('Success:', response));
+    setTimeout("document.location = document.location", 2000);
+
   
    }
 
 
 
-   UpdateVentas(id){
+   UpdateVentas(){
     
-    fetch('http://localhost:3004/api/ventas/'+ id, {
+    fetch('http://localhost:3004/api/ventas/'+ document.getElementById("_id").value, {
       method: 'PUT', 
       body: JSON.stringify({
   
 
         IdVenta: document.getElementById("IdVenta").value,
         ValorTotalVenta: document.getElementById("ValorTotalVenta").value,
+        IdProducto: document.getElementById("IdProducto").value,
         Cantidad: document.getElementById("Cantidad").value,
         PrecioUnitarioCadaProducto: document.getElementById("PrecioUnitarioCadaProducto").value, 
         FechaVenta: document.getElementById("FechaVenta").value,
@@ -152,13 +216,6 @@ ocultarModalEditar=()=>{
       this.setState({modalEditar:false});
 }
 
-mostraralert=()=>{
-    Swal.fire(
-        'Good job!',
-        'You clicked the button!',
-        'success'
-      )
-}
 /* FUNCION PARA EDITAR*/
 
 editar=(dato)=>{
@@ -168,6 +225,7 @@ editar=(dato)=>{
         if(dato.IdVenta==registro.IdVenta){
             lista[contador]._id = dato._id;
             lista[contador].ValorTotalVenta=dato.ValorTotalVenta;
+            lista[contador].IdProducto = document.getElementById("IdProducto").value;
             lista[contador].Cantidad=dato.Cantidad;
             lista[contador].PrecioUnitarioCadaProducto=dato.PrecioUnitarioCadaProducto;
             lista[contador].FechaVenta=dato.FechaVenta;
@@ -175,8 +233,9 @@ editar=(dato)=>{
             lista[contador].NombreCliente=dato.NombreCliente;
             lista[contador].Vendedor=dato.Vendedor;
             lista[contador].EstadoVenta=document.getElementById("EstadoVenta").value;
-            this.UpdateVentas(dato._id);
             
+            
+        
         }
         contador++;
     });
@@ -187,6 +246,8 @@ editar=(dato)=>{
         timer: '1700',
 
     });
+    this.UpdateVentas();
+
 
 }
 
@@ -198,6 +259,8 @@ insertar= ()=>{
     var valorNuevo= {...this.state.form};
     valorNuevo.IdVenta=this.state.datas.length+8401;
     valorNuevo.EstadoVenta = document.getElementById("EstadoVenta").value;
+    valorNuevo.IdProducto = document.getElementById("IdProducto").value;
+
     var lista= this.state.datas;
     lista.push(valorNuevo);
     this.setState({ modalInsertar: false, datas: lista });
@@ -210,13 +273,13 @@ insertar= ()=>{
 
     });
 
-
   }
+
 
 /* FUNCION PARA ELIMINAR*/
 
 eliminar=(dato)=>{
-    var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")    
+    var opcion=window.confirm(" Seguro que desea eliminar la venta " + dato.IdVenta + " ? ")
     if(opcion){
         var contador=0;
         var lista = this.state.datas;
@@ -238,20 +301,16 @@ eliminar=(dato)=>{
 
     return (
 
-        <div>
+        <div className="div">
             <Container className="body"> 
             <h1 className="text-center">Gestion ventas</h1>
             
             <form>
                 <p>
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button className ="" color="primary" >Buscar Venta</Button>
-                 </div>
-                <div>
-                    
+                <div> 
                 <label>ID</label>
                 </div>
-                  <Form.Control type="text" placeholder="Busqueda de venta por ID" />
+                  <Form.Control type="text" placeholder="Busqueda de venta por ID de venta" onChange={this.onChange}  value={this.state.busqueda}/>
                 </p>
 
             </form>
@@ -260,6 +319,7 @@ eliminar=(dato)=>{
             <Table>
                 <thead><tr><th className="text-center">ID Venta</th> 
                 <th className="text-center">Valor total de la venta</th>
+                <th className="text-center">ID del producto</th>
                 <th className="text-center">Cantidad</th>
                 <th className="text-center">Precio unitario del producto</th>
                 <th className="text-center">Fecha de la Venta</th>
@@ -271,9 +331,10 @@ eliminar=(dato)=>{
                 </tr></thead>
                 <tbody>
                     {this.state.datas.map((elemento)=>(
-                        <tr>
-                            <td className="text-center">{elemento.IdVenta}</td> 
+                        <tr key={elemento._id}>
+                            <td className="text-center">{elemento.IdVenta}</td>
                             <td className="text-center">{elemento.ValorTotalVenta}</td>
+                            <td className="text-center">{elemento.IdProducto}</td>
                             <td className="text-center">{elemento.Cantidad}</td>
                             <td className="text-center">{elemento.PrecioUnitarioCadaProducto}</td>
                             <td className="text-center">{elemento.FechaVenta}</td>
@@ -311,6 +372,22 @@ eliminar=(dato)=>{
                         </div>
                         <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} />
                      </FormGroup>
+
+                       
+                    <FormGroup>
+                        <div>
+                        <label>Id producto</label>
+                        </div>
+
+                        <select id="IdProducto" className="btn btn-info dropdown-toggle" name="IdProducto" >
+                            {this.state.products.map((elementos)=>(
+
+                            <option key={elementos.IdProducto} className="btn btn-danger dropdown-toggle" value={elementos.IdProducto} >{elementos.IdProducto}</option>
+                            ))}
+                        </select>
+
+                    </FormGroup>
+
 
                     <FormGroup>
                         <div>
@@ -384,7 +461,13 @@ eliminar=(dato)=>{
                 </ModalHeader>
                 <ModalBody>
 
-              
+                <FormGroup>
+                        <div>
+                        <label>Id Object</label>
+                        </div>
+                        <input className="Form-control" readOnly name="Id" id="_id" type="text" value={this.state.form._id}/>
+                    </FormGroup>
+
                     <FormGroup>
                         <div>
                         <label>Id Venta:</label>
@@ -398,6 +481,21 @@ eliminar=(dato)=>{
                         </div>
                         <input className="Form-control" name="ValorTotalVenta" id="ValorTotalVenta" type="text" onChange={this.handleChange} value={this.state.form.ValorTotalVenta}/>
                      </FormGroup>
+
+                          
+                    <FormGroup>
+                        <div>
+                        <label>Id producto</label>
+                        </div>
+
+                        <select id="IdProducto" className="btn btn-info dropdown-toggle" name="IdProducto" >
+                            {this.state.products.map((elementos)=>(
+
+                            <option key={elementos.IdProducto} className="btn btn-danger dropdown-toggle" value={elementos.IdProducto} >{elementos.IdProducto}</option>
+                            ))}
+                        </select>
+
+                    </FormGroup>
 
                     <FormGroup>
                         <div>

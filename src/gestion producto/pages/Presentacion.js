@@ -1,7 +1,13 @@
+import React from 'react';
+import ListaProductos from "../pages/components/ListaProductos";
+import './Presentacion.css';
+
 const Presentacion = () => {
-    return (
-    <h1>Prueba crear producto</h1>
-    );
-  };
-  
-  export default Presentacion;
+  return (
+    <div className="fondoTotal">
+      <ListaProductos />
+    </div>
+  );
+};
+export default Presentacion;
+

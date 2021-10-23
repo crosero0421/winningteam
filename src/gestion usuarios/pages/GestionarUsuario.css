@@ -10,14 +10,20 @@ padding-right: 100px;
     background-attachment: fixed;
     min-height: 100vh;
     background-position: center;
-    margin-left: 100px;
-    padding: 60px;
-    
-    
+    padding: 80px;
+    width: 200vw;
+    margin-left: 210px;
+            
     
   }
 
+.div {
 
+  background: url(../pages/Imagen/ImagenFondo.jpeg);
+  padding-left: 30px;
+
+
+}
   
 .formulario form {
   
